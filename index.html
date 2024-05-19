@@ -1,21 +1,36 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" href="./images/Galaga_Fighter.png" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <meta name="description" content="Galaga Game" />
+    <meta name="author" content="Manuel Jimena García" />
+    <meta name="keywords" content="Galaga" />
     <title>Galaga</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <img class="logo" src="images/Logo.webp" title="Galaga Logo">
     <div id="menu">
-        <h1>Galaga</h1>
-        <button id="startButton">START</button>
+        <ul class="menu">
+            <li><button id="startButton">START</button></li>
+            <li><button id="highscoresButton">HIGH SCORES</button></li>
+        </ul>
     </div>
     <div id="gameOver" class="hidden">
         <h1>Game Over</h1>
         <button id="restartButton">RESTART</button>
     </div>
+    <div id="highScores" class="hidden">
+        <h1>High Scores</h1>
+        <div id="high-score-list"></div>
+        <button id="backButton">BACK</button>
+    </div>
     <canvas id="gameCanvas"></canvas>
-    <script src="script.js"></script>
+    <script src="scripts/systems/savescores.js"></script>
+    <script src="scripts/pages/highscores.js"></script>
+    <script src="scripts/script.js"></script>
 </body>
 </html>

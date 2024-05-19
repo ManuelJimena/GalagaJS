@@ -1,12 +1,24 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const startButton = document.getElementById('startButton');
+const highscoresButton = document.getElementById('highscoresButton');
+const backButton = document.getElementById('backButton');
 const menu = document.getElementById('menu');
 const gameOverScreen = document.getElementById('gameOver');
+const highScoresScreen = document.getElementById('highScores');
 const restartButton = document.getElementById('restartButton');
 
 const playerImage = new Image();
-playerImage.src = 'images/PlayerShip.png';
+playerImage.src = 'images/Galaga_Fighter.png';
+
+const beeImage = new Image();
+beeImage.src = 'images/bee2.png';
+const bossImage = new Image();
+bossImage.src = 'images/boss2.png';
+const butterflyImage = new Image();
+butterflyImage.src = 'images/butterfly2.png';
+
+const enemyImages = [beeImage, bossImage, butterflyImage];
 
 let game = {
     player: {
@@ -17,6 +29,7 @@ let game = {
         canShoot: true
     },
     bullets: [],
+    enemyBullets: [],
     enemies: [],
     score: 0,
     lives: 3,
@@ -24,9 +37,9 @@ let game = {
     running: false
 };
 
-const shootSound = new Audio('sounds/shoot.mp3');
-const explosionSound = new Audio('sounds/explosion.mp3');
-const startSound = new Audio('sounds/start.mp3');
+const shootSound = new Audio('sounds/Firing_Sound.mp3');
+const explosionSound = new Audio('sounds/Player_Death.mp3');
+const startSound = new Audio('sounds/Theme_Song.mp3');
 
 function playSound(sound) {
     sound.currentTime = 0;
@@ -37,6 +50,7 @@ function resetGame() {
     game.player.x = canvas.width / 2 - 20;
     game.player.y = canvas.height - 80;
     game.bullets = [];
+    game.enemyBullets = [];
     game.enemies = [];
     game.score = 0;
     game.lives = 3;
@@ -59,6 +73,17 @@ startButton.addEventListener('click', () => {
     playSound(startSound);
     resetGame();
     gameLoop();
+});
+
+highscoresButton.addEventListener('click', () => {
+    menu.classList.add('hidden');
+    highScoresScreen.classList.remove('hidden');
+    LocalScores.persistence.report();
+});
+
+backButton.addEventListener('click', () => {
+    highScoresScreen.classList.add('hidden');
+    menu.classList.remove('hidden');
 });
 
 restartButton.addEventListener('click', () => {
@@ -108,20 +133,47 @@ function drawBullets() {
     });
 }
 
+function drawEnemyBullets() {
+    game.enemyBullets.forEach((bullet, index) => {
+        bullet.y += 10;
+        if (bullet.y > canvas.height) {
+            game.enemyBullets.splice(index, 1);
+        } else {
+            ctx.fillStyle = bullet.color;
+            ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+        }
+    });
+}
+
 function createEnemies() {
     game.enemies = [];
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 10; j++) {
+            const randomImage = enemyImages[Math.floor(Math.random() * enemyImages.length)];
+            const isBoss = randomImage === bossImage;
             game.enemies.push({
                 x: j * 50,
                 y: i * 50,
                 width: 40,
                 height: 40,
-                color: 'blue',
+                image: randomImage,
+                canShoot: isBoss,
                 direction: 1,
                 speed: 0.5 + (game.level * 0.05)
             });
         }
+    }
+}
+
+function enemyShoot(enemy) {
+    if (game.enemyBullets.length < 2) {
+        game.enemyBullets.push({
+            x: enemy.x + enemy.width / 2 - 2,
+            y: enemy.y + enemy.height,
+            width: 4,
+            height: 10,
+            color: 'red'
+        });
     }
 }
 
@@ -132,8 +184,11 @@ function drawEnemies() {
             enemy.direction *= -1;
             enemy.y += 20;
         }
-        ctx.fillStyle = enemy.color;
-        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+        ctx.drawImage(enemy.image, enemy.x, enemy.y, enemy.width, enemy.height);
+
+        if (enemy.canShoot && Math.random() < 0.01) {
+            enemyShoot(enemy);
+        }
     });
 }
 
@@ -162,6 +217,21 @@ function detectCollisions() {
                 gameOver();
             } else {
                 resetEnemies();
+            }
+        }
+    });
+}
+
+function detectPlayerCollisions() {
+    game.enemyBullets.forEach((bullet, bulletIndex) => {
+        if (bullet.x < game.player.x + game.player.width &&
+            bullet.x + bullet.width > game.player.x &&
+            bullet.y < game.player.y + game.player.height &&
+            bullet.y + bullet.height > game.player.y) {
+            game.enemyBullets.splice(bulletIndex, 1);
+            game.lives -= 1;
+            if (game.lives === 0) {
+                gameOver();
             }
         }
     });
@@ -208,10 +278,7 @@ function resetEnemies() {
 }
 
 function gameOver() {
-    game.running = false;
-    ctx.fillStyle = 'red';
-    ctx.font = '50px Arial';
-    ctx.fillText('Game Over', canvas.width / 2 - ctx.measureText('Game Over').width / 2, canvas.height / 2);
+    saveScoreValue(game.score);
     gameOverScreen.classList.remove('hidden');
 }
 
@@ -220,7 +287,21 @@ function gameWon() {
     ctx.fillStyle = 'green';
     ctx.font = '50px Arial';
     ctx.fillText('Has acabado con la amenaza alienígena', canvas.width / 2 - ctx.measureText('Has acabado con la amenaza alienígena').width / 2, canvas.height / 2);
+    saveScoreValue(game.score);
     gameOverScreen.classList.remove('hidden');
+}
+
+function drawGame() {
+    drawPlayer();
+    drawBullets();
+    drawEnemyBullets();
+    drawEnemies();
+    detectCollisions();
+    detectPlayerCollisions();
+    drawScore();
+    drawLevel();
+    drawLives();
+    checkLevel();
 }
 
 function gameLoop() {
@@ -228,17 +309,6 @@ function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGame();
     requestAnimationFrame(gameLoop);
-}
-
-function drawGame() {
-    drawPlayer();
-    drawBullets();
-    drawEnemies();
-    detectCollisions();
-    drawScore();
-    drawLevel();
-    drawLives();
-    checkLevel();
 }
 
 createEnemies();
