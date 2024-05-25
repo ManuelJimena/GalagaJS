@@ -12,25 +12,29 @@
     <title>Galaga</title>
 </head>
 <body>
-    <img class="logo" src="images/Logo.webp" title="Galaga Logo">
-    <div id="menu">
+    <div id="menu" class="screen">
+        <img class="logo" src="images/Logo.webp" title="Galaga Logo">
         <ul class="menu">
-            <li><button id="startButton">START</button></li>
-            <li><button id="highscoresButton">HIGH SCORES</button></li>
+            <li><button id="startButton">Press Start</button></li>
+            <li><button id="highscoresButton">High Scores</button></li>
         </ul>
     </div>
-    <div id="gameOver" class="hidden">
-        <h1>Game Over</h1>
-        <button id="restartButton">RESTART</button>
+    <div id="gameOver" class="screen hidden">
+        <h2>Game Over</h2>
+        <button id="restartButton">Restart</button>
     </div>
-    <div id="highScores" class="hidden">
-        <h1>High Scores</h1>
+    <div id="highScores" class="screen hidden">
+        <h2>High Scores</h2>
         <div id="high-score-list"></div>
-        <button id="backButton">BACK</button>
+        <button id="backButton">Back</button>
     </div>
     <canvas id="gameCanvas"></canvas>
     <script src="scripts/systems/savescores.js"></script>
     <script src="scripts/pages/highscores.js"></script>
+    <script src="scripts/media.js"></script>
+    <script src="scripts/systems/input.js"></script>
+    <script src="scripts/systems/logic.js"></script>
+    <script src="scripts/systems/render.js"></script>
     <script src="scripts/script.js"></script>
 </body>
 </html>

@@ -1,56 +1,60 @@
-MyGame.screens['high-scores'] = (function(game) {
+(function(LocalScores) {
     'use strict';
 
     let currentHighlightedValue;
-    
+
     function initialize() {
-        document.getElementById('id-high-scores-back').addEventListener(
+        document.getElementById('backButton').addEventListener(
             'click',
-            function() { game.showScreen('main-menu'); });
-        
+            function() { showScreen('menu'); });
+
         LocalScores.persistence.report();
     }
 
     function selectMenuOption() {
-        if (currentHighlightedValue === "id-reset-high-scores") {
+        if (currentHighlightedValue === "reset-high-scores") {
             resetHighScores();
-        } else if (currentHighlightedValue === "id-high-scores-back") {
-            game.showScreen("main-menu");
+        } else if (currentHighlightedValue === "backButton") {
+            showScreen("menu");
         }
     }
 
     function menuDown() {
-        if (currentHighlightedValue === 'id-high-scores-back') {
-            currentHighlightedValue = "id-reset-high-scores";
-            document.getElementById("id-high-scores-back").style.border = "0.1em solid rgb(0, 0, 0)";
-            document.getElementById("id-reset-high-scores").style.border = "0.1em solid #CECEF6";
+        if (currentHighlightedValue === 'backButton') {
+            currentHighlightedValue = "reset-high-scores";
+            document.getElementById("backButton").style.border = "0.1em solid rgb(0, 0, 0)";
+            document.getElementById("reset-high-scores").style.border = "0.1em solid #CECEF6";
         } else {
-            currentHighlightedValue = 'id-high-scores-back';
-            document.getElementById("id-high-scores-back").style.border = "0.1em solid #CECEF6";
-            document.getElementById("id-reset-high-scores").style.border = "0.1em solid rgb(0, 0, 0)";
+            currentHighlightedValue = 'backButton';
+            document.getElementById("backButton").style.border = "0.1em solid #CECEF6";
+            document.getElementById("reset-high-scores").style.border = "0.1em solid rgb(0, 0, 0)";
         }
     }
-    
-    function run() {
-        currentHighlightedValue = 'id-high-scores-back';
-        document.getElementById("id-high-scores-back").style.border = "0.1em solid #CECEF6";
-        document.getElementById("id-reset-high-scores").style.border = "0.1em solid rgb(0, 0, 0)";
 
-        document.getElementById('body').onkeyup = function(e) {
-            if (game.getActiveScreen() === "high-scores") {
-                if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-                    menuDown();
-                } else if (e.key === "Enter") {
-                    selectMenuOption();
-                }  else if (e.key === "Escape") {
-                    game.showScreen("main-menu");
-                }
+    function run() {
+        currentHighlightedValue = 'backButton';
+        document.getElementById("backButton").style.border = "0.1em solid #CECEF6";
+        document.getElementById("reset-high-scores").style.border = "0.1em solid rgb(0, 0, 0)";
+
+        document.body.onkeyup = function(e) {
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                menuDown();
+            } else if (e.key === "Enter") {
+                selectMenuOption();
+            } else if (e.key === "Escape") {
+                showScreen("menu");
             }
         }
     }
-    
-    return {
-        initialize : initialize,
-        run : run
+
+    function showScreen(screenId) {
+        const screens = document.querySelectorAll('.screen');
+        screens.forEach(screen => screen.classList.add('hidden'));
+        document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    window.highscores = {
+        initialize: initialize,
+        run: run
     };
-}(MyGame.game));
+}(LocalScores));
