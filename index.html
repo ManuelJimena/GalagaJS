@@ -1,40 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="icon" href="./images/Galaga_Fighter.png" type="image/x-icon" />
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <meta name="description" content="Galaga Game" />
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+   <link rel="icon" href="./images/Galaga_Fighter.png" type="image/x-icon" />
+   <link rel="stylesheet" type="text/css" href="styles.css">
+   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <meta
+      name="description"
+      content="Galaga Game"
+    />
     <meta name="author" content="Manuel Jimena García" />
     <meta name="keywords" content="Galaga" />
-    <title>Galaga</title>
+   <title>Galaga</title>
 </head>
-<body>
-    <div id="menu" class="screen">
-        <img class="logo" src="images/Logo.webp" title="Galaga Logo">
-        <ul class="menu">
-            <li><button id="startButton">Press Start</button></li>
-            <li><button id="highscoresButton">High Scores</button></li>
-        </ul>
-    </div>
-    <div id="gameOver" class="screen hidden">
-        <h2>Game Over</h2>
-        <button id="restartButton">Restart</button>
-    </div>
-    <div id="highScores" class="screen hidden">
-        <h2>High Scores</h2>
-        <div id="high-score-list"></div>
-        <button id="backButton">Back</button>
-    </div>
-    <canvas id="gameCanvas"></canvas>
-    <script src="scripts/systems/savescores.js"></script>
-    <script src="scripts/pages/highscores.js"></script>
-    <script src="scripts/media.js"></script>
-    <script src="scripts/systems/input.js"></script>
-    <script src="scripts/systems/logic.js"></script>
-    <script src="scripts/systems/render.js"></script>
-    <script src="scripts/script.js"></script>
+<body onload="MyGame.game.initialize();" id="body">
+   <div id="game">
+      <div id="main-menu" class="screen">
+         <img class="logo" src="images/Logo.webp" title="Galaga Logo">
+         <ul class="menu">
+            <li><button id="id-new-game" class="start-button">Press Start</button></li>
+            <li><button id="id-high-scores">High Scores</button></li>
+         </ul>
+      </div>
+      <div id="game-play" class="screen">
+         <canvas id="id-canvas" class="canvas" width="1200" height="1600"></canvas>
+      </div>
+      <div id="high-scores" class="screen">
+         <h2>High Scores</h2>
+         <ol id="high-score-list">
+         </ol>
+         <ul class="menu">
+            <li><button id="id-reset-high-scores" onclick="resetHighScores()" type="button">Reset High Scores</button></li>
+            <li><button id="id-high-scores-back">Back</button></li>
+         </ul>
+      </div>
+      <div id="game-over" class="screen">
+         <h2 style="color: white; text-align: center; margin-top: 50%;">GAME OVER</h2>
+      </div>
+   </div>
+   <div id="mobile-controls">
+      <div id="mobile-movement-container">
+          <div id="joystick-boundary"></div>
+          <input id="mobile-movement" type="range" min="0" max="100" value="50">
+      </div>
+      <button id="mobile-fire"></button>
+  </div>
+   <script>
+      let MyGame = {
+         screens: {},
+         input: {},
+         objects: {},
+         render: []
+      };
+
+   </script>
+   <script src="scripts/systems/math.js"></script>
+   <script src="scripts/systems/input-keyboard.js"></script>
+   <script src="scripts/update.js"></script>
+   <script src="scripts/render.js"></script>
+   <script src="scripts/systems/effects.js"></script>
+   <script src="scripts/systems/pathing.js"></script>
+   <script src="scripts/stages.js"></script>
+   <script src="scripts/systems/savescores.js"></script>
+   <script src="scripts/pages/game.js"></script>
+   <script src="scripts/pages/mainmenu.js"></script>
+   <script src="scripts/pages/highscores.js"></script>
+   <script src="scripts/gameplay.js"></script>
 </body>
 </html>
