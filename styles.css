@@ -215,7 +215,7 @@ input:checked + .slider:before {
     align-items: center;
     justify-content: center;
     position: fixed;
-    bottom: 10px;
+    bottom: 1px;
     height: 10vh;
     width: 100vw;
     visibility: hidden;
@@ -237,7 +237,7 @@ input:checked + .slider:before {
     align-items: center;
     justify-content: center;
     margin-left: auto;
-    margin-right: 10vw;
+    margin-right: 12vw;
 }
 
 #mobile-controls button:after {
@@ -251,7 +251,7 @@ input:checked + .slider:before {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 10vw;
+    margin-left: 2vw;
 }
 
 #joystick-boundary {
